@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		AFD4C9162EBE73310002BEE2 /* UtilsPackage in Frameworks */ = {isa = PBXBuildFile; productRef = AFD4C9152EBE73310002BEE2 /* UtilsPackage */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		AF03A4442EBCC54E00FF0104 /* SRTMerger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SRTMerger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AFD4C9162EBE73310002BEE2 /* UtilsPackage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = SRTMerger;
 			packageProductDependencies = (
+				AFD4C9152EBE73310002BEE2 /* UtilsPackage */,
 			);
 			productName = SRTMerger;
 			productReference = AF03A4442EBCC54E00FF0104 /* SRTMerger.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = AF03A43B2EBCC54E00FF0104;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				AF4D7B522EBE727F002EC68F /* XCLocalSwiftPackageReference "../UtilsPackage" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AF03A4452EBCC54E00FF0104 /* Products */;
 			projectDirPath = "";
@@ -351,6 +360,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		AF4D7B522EBE727F002EC68F /* XCLocalSwiftPackageReference "../UtilsPackage" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../UtilsPackage;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AFD4C9152EBE73310002BEE2 /* UtilsPackage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UtilsPackage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AF03A43C2EBCC54E00FF0104 /* Project object */;
 }
