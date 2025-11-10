@@ -57,16 +57,16 @@ struct ContentView: View {
          if !viewModel.processedSubtitles.isEmpty && viewModel.processingMode == .merge {
             VStack(alignment: .leading, spacing: 8) {
                HStack {
-                  Text("Tempo Máximo entre Legendas")
+                  Text("Tempo Máximo entre Legendas (Display Interval)")
                      .font(.headline)
                   Spacer()
-                  Text("\(String(format: "%.3f", viewModel.maxGap2Merge))s")
+                  Text("\(String(format: "%.3f", viewModel.maxDisplayGapTime))s")
                      .font(.caption)
                      .fontWeight(.bold)
                      .foregroundColor(.blue)
                }
-               Slider(value: $viewModel.maxGap2Merge, in: 0.0...5.0, step: 0.001)
-                  .onChange(of: viewModel.maxGap2Merge) {
+               Slider(value: $viewModel.maxDisplayGapTime, in: 0.0...3.0, step: 0.001)
+                  .onChange(of: viewModel.maxDisplayGapTime) {
                      viewModel.processOriginalSubtitles()
                   }
                Text("Legendas com intervalo inferior serão unidas automaticamente")
@@ -83,19 +83,19 @@ struct ContentView: View {
                // Max Duration
                VStack(alignment: .leading, spacing: 8) {
                   HStack {
-                     Text("Duração Máxima por Legenda")
+                     Text("Duração Máxima por Legenda (Display Time)")
                         .font(.headline)
                      Text("Legendas mais longas serão divididas automaticamente")
                         .font(.caption)
                         .foregroundColor(.secondary)
                      Spacer()
-                     Text("\(String(format: "%.1f", viewModel.maxDuration))s")
+                     Text("\(String(format: "%.3f", viewModel.maxDisplayTime))s")
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundColor(.orange)
                   }
-                  Slider(value: $viewModel.maxDuration, in: 2.0...300.0, step: 0.5)
-                     .onChange(of: viewModel.maxDuration) {
+                  Slider(value: $viewModel.maxDisplayTime, in: 0.0...150.0, step: 0.001)
+                     .onChange(of: viewModel.maxDisplayTime) {
                         viewModel.processOriginalSubtitles()
                      }
                }
@@ -191,6 +191,21 @@ struct ContentView: View {
          // Save Buttons
          if !viewModel.processedSubtitles.isEmpty {
             HStack(spacing: 12) {
+               // Backup Buttons
+               Button(action: viewModel.restoreBackup) {
+                  Label("Restaurar Backup", systemImage: "arrow.uturn.backward")
+               }
+               .disabled(viewModel.backupStack.isEmpty)
+               .buttonStyle(.bordered)
+               HStack(spacing: 8) {
+                  Button(action: viewModel.applyProcessed) {
+                     Label("Aplicar alterações", systemImage: "arrow.down.doc")
+                  }
+                  .disabled(viewModel.processedSubtitles.isEmpty)
+                  .buttonStyle(.borderedProminent)
+               }
+               .padding()
+               Spacer()
                Button(action: viewModel.saveSRTFile) {
                   HStack {
                      Image(systemName: "square.and.arrow.down")

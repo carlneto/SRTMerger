@@ -7,15 +7,17 @@ import UtilsPackage
 
 @MainActor
 class AppViewModel: NSObject, ObservableObject {
+   static private let maxDisplayTimeK: TimeInterval = 5.5
    @Published var inputFileName: String = "Selecione um ficheiro .srt"
    @Published var processedSubtitles: Subtitles = []
+   @Published var backupStack: [Subtitles] = []
    @Published var showSuccessMessage: Bool = false
    @Published var successMessage: String = ""
    @Published var isProcessing: Bool = false
-   @Published var processingMode: ProcessingMode = .merge
-   @Published var maxGap2Merge: TimeInterval = 0.0
-   @Published var maxDuration: TimeInterval = 5.5
-   @Published var splitCharacters: String = "\n,.!?;:-\"'»…>—_"
+   @Published var processingMode: ProcessingMode = .split
+   @Published var maxDisplayGapTime: TimeInterval = 0.0
+   @Published var maxDisplayTime: TimeInterval = AppViewModel.maxDisplayTimeK
+   @Published var splitCharacters: String = "\\n,.!?;:-\"'»…>—_eéaàoy"
    @Published var splitMethod: SplitMethod = .byAll
    var originalSubtitles: Subtitles = []
    /// Opens dialog to select an .srt file
@@ -52,20 +54,31 @@ class AppViewModel: NSObject, ObservableObject {
    }
    /// Processes subtitles based on current mode and settings
    func process(subtitles: Subtitles) {
-      if let minGap = subtitles.minGap { self.maxGap2Merge = minGap }
+      if let minGap = subtitles.minGap { self.maxDisplayGapTime = minGap }
+      self.maxDisplayTime = AppViewModel.maxDisplayTimeK
       self.originalSubtitles = subtitles
+      self.processingMode = .split
       self.processOriginalSubtitles()
    }
    func processOriginalSubtitles() {
       self.processedSubtitles = self.originalSubtitles
-         .processed(processingMode: self.processingMode, maxGap2Merge: self.maxGap2Merge,
-                    maxDuration: self.maxDuration, splitCharacters: self.splitCharacters, splitMethod: self.splitMethod)
+         .processed(processingMode: self.processingMode, maxGap2Merge: self.maxDisplayGapTime,
+                    maxDuration: self.maxDisplayTime, splitCharacters: self.splitCharacters, splitMethod: self.splitMethod)
+   }
+   func applyProcessed() {
+      self.backupStack.append(self.originalSubtitles)
+      self.originalSubtitles = self.processedSubtitles
+   }
+
+   func restoreBackup() {
+      let lastBackup = self.backupStack.removeLast()
+      self.originalSubtitles = lastBackup
    }
    /// Saves processed results to new .srt file
    func saveSRTFile() {
       let srtContent = processedSubtitles.strString
       let panel = NSSavePanel()
-      panel.allowedContentTypes = [UTType(filenameExtension: "srt") ?? .plainText]
+      panel.allowedContentTypes = [UTType.srt]
       panel.nameFieldStringValue = "legendas_processadas_\(self.processingMode.str).srt"
       if panel.runModal() == .OK, let url = panel.url {
          do {
