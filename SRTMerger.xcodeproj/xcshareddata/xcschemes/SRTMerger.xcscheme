@@ -45,7 +45,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "echo &quot;Copiando ${PRODUCT_NAME}.app para a pasta /Applications...&quot;&#10;if [ -d &quot;/Applications&quot; ]; then&#10;  cp -R &quot;${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app&quot; &quot;/Applications&quot;&#10;else&#10;  echo &quot;Aviso: A pasta /Applications n&#xe3;o foi encontrada.&quot; &gt;&amp;2&#10;fi&#10;">
+               scriptText = "echo &quot;Copiando ${PRODUCT_NAME}.app para a pasta /Applications...&quot;&#10;cp -R &quot;${CODESIGNING_FOLDER_PATH}&quot; &quot;/Applications&quot;&#10;">
             </ActionContent>
          </ExecutionAction>
       </PostActions>
