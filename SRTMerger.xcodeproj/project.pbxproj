@@ -73,7 +73,6 @@
 				AF03A4402EBCC54E00FF0104 /* Sources */,
 				AF03A4412EBCC54E00FF0104 /* Frameworks */,
 				AF03A4422EBCC54E00FF0104 /* Resources */,
-				AF47B3042ECA0FD7009C5EBF /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -136,27 +135,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		AF47B3042ECA0FD7009C5EBF /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "echo \"Copiando ${PRODUCT_NAME}.app para a pasta /Applications...\"\nif [ -d \"/Applications\" ]; then\n  cp -R \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\" \"/Applications\"\nelse\n  echo \"Aviso: A pasta /Applications não foi encontrada.\" >&2\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AF03A4402EBCC54E00FF0104 /* Sources */ = {
