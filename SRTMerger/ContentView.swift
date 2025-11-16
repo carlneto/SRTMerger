@@ -99,20 +99,6 @@ struct ContentView: View {
                         viewModel.processOriginalSubtitles()
                      }
                }
-               // Split Characters
-               HStack(alignment: .center, spacing: 8) {
-                  Text("Caracteres de Divisão")
-                     .font(.headline)
-                  Text("Pontuação usada para dividir o texto")
-                     .font(.caption)
-                     .foregroundColor(.secondary)
-                  Spacer()
-                  TextField("Ex: ,.", text: $viewModel.splitCharacters)
-                     .textFieldStyle(.roundedBorder)
-                     .onChange(of: viewModel.splitCharacters) {
-                        viewModel.processOriginalSubtitles()
-                     }
-               }
                // Split Method
                HStack(alignment: .center, spacing: 8) {
                   Text("Método de Distribuição de Tempo")
@@ -155,6 +141,29 @@ struct ContentView: View {
                   value: difference > 0 ? "+\(difference)" : "\(difference)",
                   color: viewModel.processingMode == .merge ? .blue : .orange
                )
+               let arr_ = viewModel.processedSubtitles.map( { $0.caption.count } )
+               if let stats = arr_.stats() {
+                  StatisticBox(
+                     title: "Menor",
+                     value: "\(stats.min) [\((arr_.firstIndex(where: { $0 == stats.min }) ?? -2).advanced(by: 1))]",
+                     color: .gray
+                  )
+                  StatisticBox(
+                     title: "Média",
+                     value: "\(stats.avg.str1)",
+                     color: .gray
+                  )
+                  StatisticBox(
+                     title: "Desvio",
+                     value: "\(stats.std.str1)",
+                     color: .gray
+                  )
+                  StatisticBox(
+                     title: "Maior",
+                     value: "\(stats.max) [\((arr_.firstIndex(where: { $0 == stats.max }) ?? -2).advanced(by: 1))]",
+                     color: .gray
+                  )
+               }
             }
          }
          // Preview List
@@ -558,11 +567,11 @@ struct MockStatisticsView: View {
    private func calculateAverageGap() -> Double {
       guard subtitles.count > 1 else { return 0 }
       var totalGap: Double = 0
-      for i in 0..<(subtitles.count - 1) {
+      for i in 0..<(subtitles.lastIdx) {
          let gap = subtitles[i + 1].startTime - subtitles[i].stopTime
          totalGap += gap
       }
-      return totalGap / Double(subtitles.count - 1)
+      return totalGap / Double(subtitles.lastIdx)
    }
    private func countLongSubtitles() -> Int {
       subtitles.filter { $0.srtDuration > 7.0 }.count
@@ -570,7 +579,7 @@ struct MockStatisticsView: View {
    private func countSmallGaps() -> Int {
       guard subtitles.count > 1 else { return 0 }
       var count = 0
-      for i in 0..<(subtitles.count - 1) {
+      for i in 0..<(subtitles.lastIdx) {
          let gap = subtitles[i + 1].startTime - subtitles[i].stopTime
          if gap < 0.1 {
             count += 1

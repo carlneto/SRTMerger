@@ -8,6 +8,7 @@ import UtilsPackage
 @MainActor
 class AppViewModel: NSObject, ObservableObject {
    static private let maxDisplayTimeK: TimeInterval = 5.5
+   private var currentTask: Task<Void, Never>?
    @Published var inputFileName: String = "Selecione um ficheiro .srt"
    @Published var processedSubtitles: Subtitles = []
    @Published var backupStack: [Subtitles] = []
@@ -17,7 +18,6 @@ class AppViewModel: NSObject, ObservableObject {
    @Published var processingMode: ProcessingMode = .split
    @Published var maxDisplayGapTime: TimeInterval = 0.0
    @Published var maxDisplayTime: TimeInterval = AppViewModel.maxDisplayTimeK
-   @Published var splitCharacters: String = "\\n,.!?;:-\"'»…>—_eéaàoy"
    @Published var splitMethod: SplitMethod = .byAll
    var originalSubtitles: Subtitles = []
    /// Opens dialog to select an .srt file
@@ -32,24 +32,19 @@ class AppViewModel: NSObject, ObservableObject {
       }
    }
    /// Loads and processes an .srt file
-   private func loadAndProcessFile(url: URL) {
-      isProcessing = true
-      DispatchQueue.global(qos: .userInitiated).async {
-         do {
-            let content = try String(contentsOf: url, encoding: .utf8)
-            let subtitles = Subtitles(content: content)
-            DispatchQueue.main.async {
-               self.inputFileName = url.lastPathComponent
-               self.process(subtitles: subtitles)
-               self.isProcessing = false
-            }
-         } catch {
-            DispatchQueue.main.async {
-               self.successMessage = "Erro ao ler ficheiro: \(error.localizedDescription)"
-               self.showSuccessMessage = true
-               self.isProcessing = false
-            }
-         }
+   func loadAndProcessFile(url: URL) {
+      self.isProcessing = true
+      do {
+         let content = try url.readContent(logLevel: .normal)
+         let subtitles = Subtitles(content: content)
+         self.inputFileName = url.lastPathComponent
+         self.process(subtitles: subtitles)
+         self.backupStack = [subtitles]
+         self.isProcessing = false
+      } catch {
+         self.successMessage = "Erro ao ler ficheiro: \(error.localizedDescription)"
+         self.showSuccessMessage = true
+         self.isProcessing = false
       }
    }
    /// Processes subtitles based on current mode and settings
@@ -61,9 +56,22 @@ class AppViewModel: NSObject, ObservableObject {
       self.processOriginalSubtitles()
    }
    func processOriginalSubtitles() {
-      self.processedSubtitles = self.originalSubtitles
-         .processed(processingMode: self.processingMode, maxGap2Merge: self.maxDisplayGapTime,
-                    maxDuration: self.maxDisplayTime, splitCharacters: self.splitCharacters, splitMethod: self.splitMethod)
+      self.currentTask?.cancel()
+      self.currentTask = Task {
+         try? await Task.sleep(nanoseconds: 200_000_000)// 0.2 segs
+         let original = self.originalSubtitles
+         let mode = self.processingMode
+         let maxTime = self.maxDisplayTime
+         let maxGap = self.maxDisplayGapTime
+         let method = self.splitMethod
+         let processed = await Task.detached(priority: .userInitiated) {
+            guard !Task.isCancelled else { return Subtitles() }
+            return original.processed(processingMode: mode, maxGap2Merge: maxGap,
+                                      maxDuration: maxTime, splitMethod: method)
+         }.value
+         self.processedSubtitles = processed
+         self.isProcessing = false
+      }
    }
    func applyProcessed() {
       self.backupStack.append(self.originalSubtitles)
@@ -84,8 +92,8 @@ class AppViewModel: NSObject, ObservableObject {
          do {
             try srtContent.write(to: url, atomically: true, encoding: .utf8)
             originalSubtitles = processedSubtitles
-            successMessage = "Ficheiro guardado com sucesso!"
-            showSuccessMessage = true
+//            successMessage = "Ficheiro guardado com sucesso!"
+//            showSuccessMessage = true
          } catch {
             successMessage = "Erro ao guardar ficheiro: \(error.localizedDescription)"
             showSuccessMessage = true
@@ -101,8 +109,8 @@ class AppViewModel: NSObject, ObservableObject {
       if panel.runModal() == .OK, let url = panel.url {
          do {
             try srtContent.write(to: url, atomically: true, encoding: .utf8)
-            successMessage = "Ficheiro guardado com sucesso!"
-            showSuccessMessage = true
+//            successMessage = "Ficheiro guardado com sucesso!"
+//            showSuccessMessage = true
          } catch {
             successMessage = "Erro ao guardar ficheiro: \(error.localizedDescription)"
             showSuccessMessage = true
@@ -115,13 +123,18 @@ class AppViewModel: NSObject, ObservableObject {
 
 @main
 struct SRTMergerApp: App {
+   @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
    @StateObject private var viewModel = AppViewModel()
    var body: some Scene {
       WindowGroup {
          ContentView()
             .environmentObject(viewModel)
+            .onOpenURL { viewModel.loadAndProcessFile(url: $0) } // open with...
       }
       .windowStyle(.hiddenTitleBar)
       .windowResizability(.automatic)
    }
+}
+class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
 }

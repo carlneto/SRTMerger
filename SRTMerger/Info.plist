@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+   <dict>
+      <!-- Bundle Info -->
+      <key>CFBundleName</key>
+      <string>SRTMerger</string>
+      <key>CFBundleIdentifier</key>
+      <string>pt.carlneto.SRTMerger</string>
+      <key>CFBundleVersion</key>
+      <string>1.0</string>
+      <key>CFBundleShortVersionString</key>
+      <string>1.0</string>
+      <!-- Document Types -->
+      <key>CFBundleDocumentTypes</key>
+      <array>
+         <dict>
+            <key>CFBundleTypeName</key>
+            <string>SRT Subtitle Document</string>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>LSHandlerRank</key>
+            <string>Default</string>
+            <key>LSItemContentTypes</key>
+            <array>
+               <string>pt.carlneto.SRTMerger.srt</string>
+            </array>
+            <key>CFBundleTypeExtensions</key>
+            <array>
+               <string>srt</string>
+            </array>
+            <key>CFBundleTypeIconFile</key>
+            <string>SRTIcon</string>
+         </dict>
+      </array>
+      <!-- UTI Export Declaration -->
+      <key>UTExportedTypeDeclarations</key>
+      <array>
+         <dict>
+            <key>UTTypeIdentifier</key>
+            <string>org.matroska.srt</string>
+            <key>UTTypeDescription</key>
+            <string>SubRip Subtitle</string>
+            <key>UTTypeConformsTo</key>
+            <array>
+               <string>public.plain-text</string>
+            </array>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+               <key>public.filename-extension</key>
+               <array>
+                  <string>srt</string>
+               </array>
+               <key>public.mime-type</key>
+               <array>
+                  <string>application/x-subrip</string>
+               </array>
+            </dict>
+         </dict>
+      </array>
+   </dict>
+</plist>
