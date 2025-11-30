@@ -1,159 +1,175 @@
-# 🎬 SRT Subtitle Processor (Processador de Legendas SRT)
+# 🎬 SRT Subtitle Processor
 
-## Descrição
+*A native macOS app for professional SRT subtitle cleanup, merging, and splitting.*
 
-O **Processador de Legendas SRT** é uma aplicação nativa para macOS
-desenvolvida em SwiftUI, desenhada para facilitar a edição e
-normalização de ficheiros de legendas no formato .srt.
+<p align="center">
+  <img src="https://img.shields.io/badge/platform-macOS_13+-lightgrey?logo=apple" />
+  <img src="https://img.shields.io/badge/swift-5.7+-F05138?logo=swift" />
+  <img src="https://img.shields.io/badge/xcode-14.3+-147EFB?logo=xcode" />
+  <img src="https://img.shields.io/badge/status-private software-red" />
+  <img src="https://img.shields.io/badge/license-restricted-important" />
+</p>
 
-A ferramenta foca-se em dois problemas comuns na sincronização de
-legendas:
+---
 
-1.  **Excessiva fragmentação:** Legendas com intervalos muito curtos
-    entre si que dificultam a leitura fluida.
+## 📘 Overview
 
-2.  **Duração excessiva:** Blocos de texto que permanecem no ecrã por
-    demasiado tempo ou contêm demasiado texto.
+**SRT Subtitle Processor** is a native macOS application built with SwiftUI, designed to clean, merge, split, and normalize `.srt` subtitle files.
+It provides **real-time preview**, **statistical analysis**, and **high-precision algorithms** for smoothing fragmented subtitles or splitting long blocks of text.
 
-A aplicação oferece uma interface intuitiva com feedback em tempo real,
-estatísticas detalhadas e pré-visualização das alterações antes de
-guardar o ficheiro final.
+The app focuses on solving two common problems:
 
-## Requisitos
+* **Over-fragmentation:** subtitles with extremely short gaps that harm readability.
+* **Overlong durations:** subtitles that stay on screen too long or contain too much text.
 
-Para compilar e executar este projeto, são necessários os seguintes
-requisitos mínimos:
+---
 
-- **Sistema Operativo:** macOS 13.0 (Ventura) ou superior.
+## 🚀 Features at a Glance
 
-- **Xcode:** Versão 14.3 ou superior.
+| Feature                     | Description                                                                          |
+| --------------------------- | ------------------------------------------------------------------------------------ |
+| 🔄 **Smart Merge**          | Merges consecutive subtitles based on configurable time gaps (millisecond precision) |
+| ✂️ **Configurable Split**   | Splits long subtitles using duration limits or punctuation-aware methods             |
+| 📊 **Real-Time Statistics** | Live metrics: averages, standard deviation, min/max durations                        |
+| ⚡ **Async Processing**      | Uses Swift Concurrency to avoid UI blocking on large files                           |
+| 🖥️ **Instant Preview**     | Visualises all modifications before saving                                           |
+| ♻️ **Undo/Backup System**   | Full history stack enabling rollback of any applied change                           |
+| 🧪 **Mock/Test Mode**       | Generate test subtitles with a single click                                          |
+| 🧩 **SwiftUI Architecture** | Clear MVVM structure for maintainability & scalability                               |
 
-- **Swift:** Versão 5.7 ou superior.
+---
 
-- **Hardware:** Mac com Apple Silicon (M1/M2/M3) ou Intel.
+## 📸 Screenshots (placeholders)
 
-## Instalação
+> Replace the images below with actual screenshots when available.
 
-Como este é um projeto que não utiliza gestores de dependências externos
-complexos (como CocoaPods ou Carthage), o processo é direto:
+<p align="center">
+  <img src="https://via.placeholder.com/900x450?text=Main+Interface+Preview" />
+</p>
 
-1.  Clone o repositório ou descarregue o código-fonte.
+<p align="center">
+  <img src="https://via.placeholder.com/900x450?text=Statistics+Panel" />
+</p>
 
-2.  Abra o ficheiro .xcodeproj no Xcode.
+---
 
-3.  Aguarde a indexação do projeto.
+## 📁 Project Structure (MVVM)
 
-4.  Selecione o esquema (scheme) SRTMergerApp.
-
-5.  Pressione Cmd + R para compilar e executar.
-
-## Uso
-
-A interface da aplicação é dividida em secções lógicas:
-
-1.  **Carregamento:** Clique em **\"Selecionar Ficheiro\"** para
-    carregar um ficheiro .srt existente ou utilize o botão de \"Dados de
-    Teste\" para experimentar a funcionalidade.
-
-2.  **Seleção de Modo:**
-
-    - **Merge (Unir):** Foca-se em unir legendas consecutivas cujo
-      intervalo (gap) seja inferior ao definido. Ajuste o slider
-      **\"Tempo Máximo entre Legendas\"** para ver as uniões a acontecer
-      em tempo real.
-
-    - **Split (Dividir):** Foca-se em dividir legendas longas. Ajuste o
-      slider **\"Duração Máxima por Legenda\"** e escolha o **\"Método
-      de Distribuição\"** (e.g., por pontuação ou tempo).
-
-3.  **Análise:** Consulte o painel de estatísticas para ver o impacto
-    das alterações (redução ou aumento do número de linhas, desvio
-    padrão, etc.).
-
-4.  **Pré-visualização:** A lista inferior mostra como as legendas
-    ficarão, destacando os tempos de início, fim e duração.
-
-5.  **Guardar:**
-
-    - **\"Aplicar alterações\":** Confirma o processamento atual para a
-      memória (permite iterar sobre o resultado).
-
-    - **\"Guardar Processado\":** Exporta o ficheiro .srt final limpo.
-
-    - **\"Guardar Marcado\":** Exporta um ficheiro auxiliar para
-      depuração (útil para verificar onde ocorreram os cortes/uniões).
-
-    - **\"Restaurar Backup\":** Reverte para o estado anterior à última
-      aplicação.
-
-## Estrutura do Projeto
-
-A organização do código segue o padrão MVVM (Model-View-ViewModel):
-
+```
 SRTMerger/
 ├── App/
-│   ├── SRTMergerApp.swift        // Ponto de entrada da aplicação (Entry Point)
-│   └── AppDelegate.swift          // Gestão do ciclo de vida da aplicação
+│   ├── SRTMergerApp.swift
+│   └── AppDelegate.swift
 ├── View/
-│   ├── ContentView.swift          // Ecrã principal e orquestrador de UI
-│   ├── SubtitleRowView.swift      // Componente de visualização de uma linha de legenda
-│   └── StatisticBox.swift         // Componente reutilizável para estatísticas
+│   ├── ContentView.swift
+│   ├── SubtitleRowView.swift
+│   └── StatisticBox.swift
 ├── ViewModel/
-│   └── AppViewModel.swift         // Lógica de negócio, gestão de estado e processamento assíncrono
+│   └── AppViewModel.swift
 ├── Model/
-│   ├── Subtitle.swift             // Estrutura de dados da legenda
-│   ├── ProcessingMode.swift       // Enumeração dos modos de operação (Merge/Split)
-│   └── SplitMethod.swift          // Enumeração dos algoritmos de divisão
+│   ├── Subtitle.swift
+│   ├── ProcessingMode.swift
+│   └── SplitMethod.swift
 └── Helpers/
-    └── MockDataGenerator.swift    // Gerador de dados fictícios para testes e desenvolvimento
+    └── MockDataGenerator.swift
+```
 
-## Funcionalidades Principais
+---
 
-- **Processamento Assíncrono:** Utilização de Swift Concurrency (Tasks)
-  para garantir que a UI não bloqueia durante o processamento de
-  ficheiros grandes.
+## 🧰 Requirements
 
-- **Merge Inteligente:** União automática baseada em *time gaps*
-  configuráveis (precisão ao milissegundo).
+* **macOS** 13.0 Ventura or later
+* **Xcode** 14.3 or later
+* **Swift** 5.7 or later
+* Apple Silicon **(M1/M2/M3)** or Intel Mac
 
-- **Split Configurável:** Divisão de legendas baseada na duração máxima
-  de exposição (Display Time).
+---
 
-- **Estatísticas em Tempo Real:** Cálculo imediato de métricas como
-  desvio padrão, média, máximos e mínimos.
+## 🔧 Installation & Build Instructions
 
-- **Sistema de Backup/Undo:** Pilha de histórico que permite reverter
-  alterações aplicadas indevidamente.
+### 1. Clone the Repository
 
-- **Mock Mode:** Modo de desenvolvimento integrado para testar a UI sem
-  necessidade de ficheiros externos.
+```sh
+git clone https://github.com/carlneto/SRTSubtitleProcessor.git
+cd SRTSubtitleProcessor
+```
 
-## Licença
+### 2. Open the Project
 
-**ATENÇÃO: SOFTWARE PROPRIETÁRIO.**
+```sh
+open SRTSubtitleProcessor.xcodeproj
+```
 
-Este projeto encontra-se sob uma **Licença de Utilização Restrita**. Não
-é Software de Código Aberto (Open Source).
+### 3. Build & Run
 
-**Resumo das condições (consultar o ficheiro LICENSE ou o cabeçalho do
-código para o texto integral):**
+Select the scheme **SRTMergerApp** → press **⌘R**.
 
-- ⛔️ **Proibida** a distribuição, partilha ou venda.
+---
 
-- ⛔️ **Proibida** a engenharia inversa, modificação ou criação de obras
-  derivadas.
+## 🖱️ How to Use
 
-- ⛔️ **Proibido** o uso comercial.
+1. **Load a File**
 
-- ✅ **Permitida** apenas a utilização pessoal e privada para fins de
-  avaliação e testes.
+   * Click **“Select File”** or use **“Test Data”**.
 
-Todos os direitos de propriedade intelectual estão reservados ao Autor.
-© 2025 Autor.
+2. **Choose the Mode**
 
-## Créditos
+   * **Merge:** unify subtitles with short gaps.
+   * **Split:** divide long subtitles.
 
-- **Desenvolvimento:** carlneto
+3. **Adjust Parameters**
 
-- **Design & Arquitetura:** Baseado em SwiftUI e Swift Concurrency.
+   * Maximum time gap (Merge)
+   * Maximum duration or splitting method (Split)
 
+4. **Analyse Changes**
+   View statistics such as duration distribution, mean, deviation, etc.
+
+5. **Preview the Results**
+
+6. **Save**
+
+   * **Apply Changes** – commits in-app changes
+   * **Save Processed** – exports cleaned `.srt`
+   * **Save Marked** – debug export
+   * **Restore Backup** – undo last applied change
+
+---
+
+## 🧠 Technical Notes
+
+* Built entirely with **SwiftUI**
+* Heavy use of **Swift Concurrency** (`Task`, `async/await`)
+* Algorithmic precision up to **1 ms**
+* Designed to handle large subtitle sets efficiently
+
+---
+
+## 🔒 License
+
+**⚠️ PROPRIETARY AND RESTRICTED LICENSE**
+*Not Open Source.*
+
+Summary:
+
+* ❌ Redistribution forbidden
+* ❌ Reverse engineering forbidden
+* ❌ Modifying or creating derivative works forbidden
+* ❌ Commercial use forbidden
+* ✅ Personal use for evaluation/testing allowed
+
+© 2025 – All rights reserved.
+
+---
+
+## 👤 Author
+
+**Developer:** carlneto
+**Tech stack:** SwiftUI, Swift Concurrency, macOS frameworks
+
+---
+
+## ⭐ Support & Feedback
+
+Since this is a private project, discussions and issue tracking are not publicly available.
+If you need improvements, suggestions or additional documentation—just ask!
