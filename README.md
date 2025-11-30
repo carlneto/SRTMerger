@@ -90,43 +90,22 @@ A interface da aplicação é dividida em secções lógicas:
 
 A organização do código segue o padrão MVVM (Model-View-ViewModel):
 
-Plaintext
-
 SRTMerger/
-
 ├── App/
-
 │ ├── SRTMergerApp.swift // Ponto de entrada da aplicação (Entry Point)
-
 │ └── AppDelegate.swift // Gestão do ciclo de vida da aplicação
-
 ├── View/
-
 │ ├── ContentView.swift // Ecrã principal e orquestrador de UI
-
-│ ├── SubtitleRowView.swift // Componente de visualização de uma linha
-de legenda
-
+│ ├── SubtitleRowView.swift // Componente de visualização de uma linha de legenda
 │ └── StatisticBox.swift // Componente reutilizável para estatísticas
-
 ├── ViewModel/
-
-│ └── AppViewModel.swift // Lógica de negócio, gestão de estado e
-processamento assíncrono
-
+│ └── AppViewModel.swift // Lógica de negócio, gestão de estado e processamento assíncrono
 ├── Model/
-
 │ ├── Subtitle.swift // Estrutura de dados da legenda (inferred)
-
-│ ├── ProcessingMode.swift // Enumeração dos modos de operação
-(Merge/Split)
-
+│ ├── ProcessingMode.swift // Enumeração dos modos de operação (Merge/Split)
 │ └── SplitMethod.swift // Enumeração dos algoritmos de divisão
-
 └── Helpers/
-
-└── MockDataGenerator.swift // Gerador de dados fictícios para testes e
-desenvolvimento
+└── MockDataGenerator.swift // Gerador de dados fictícios para testes e desenvolvimento
 
 ## Funcionalidades Principais
 
