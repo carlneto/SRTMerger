@@ -39,20 +39,6 @@ The app focuses on solving two common problems:
 
 ---
 
-## 📸 Screenshots (placeholders)
-
-> Replace the images below with actual screenshots when available.
-
-<p align="center">
-  <img src="https://via.placeholder.com/900x450?text=Main+Interface+Preview" />
-</p>
-
-<p align="center">
-  <img src="https://via.placeholder.com/900x450?text=Statistics+Panel" />
-</p>
-
----
-
 ## 📁 Project Structure (MVVM)
 
 ```
